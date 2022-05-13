@@ -1,11 +1,12 @@
 import express from 'express';
-import Routes from './modules/auth.modules/auth.modules';
-import {connection} from './db/index';
-import {ZoneSetUpRoutes} from './modules/zone-setup.modules/zone-setup.router';
-import routes from './modules/app.routes';
-import  {autogenratePermission,addClientPermission,checkClientPermissionsMiddilware} from 'mongoose-autogenrate-client-permissions'
+import Routes from './routes/auth.routes';
+import {connection} from './models/index';
+import {ZoneSetUpRoutes} from './routes/zone-setup.routes';
+import routes from './routes';
+import  {autogenratePermission,addClientPermission,checkClientPermissionsMiddilware,permissionsModel} from 'mongoose-autogenrate-client-permissions'
 // console.log(routes);
 import mongoose from 'mongoose'
+import {ADMINJWTVERIFY} from './middleware/admin-verify-jwt'
 
 import cors from 'cors';
 express.json();
@@ -16,7 +17,13 @@ express.json();
     constructor() {
       this.intializeMiddleware()
       connection();
-      autogenratePermission()
+      // permissionsModel.find().then(data => {
+      //   console.log(data);
+        
+      // })
+      // console.log( permissionsModel.find());
+      
+      // autogenratePermission()
       // autogenratePermission.autogenratePermission()
 
    
@@ -25,24 +32,9 @@ express.json();
     intializeMiddleware() { 
       this.app.use(cors())
       this.app.use(express.json())
+      this.app.use("/api/admin",ADMINJWTVERIFY)
       this.app.use("/api",routes);
-      this.app.post("/test",async(req:express.Request,res:express.Response)=>{
-        try {
-            const payload = req.body; 
-            const data = await addClientPermission(payload.userId,payload.permissionId);
-            return res.status(200).json({data})
-        } catch (error) {
-          return res.status(500).json({error:error.message})
-        }
-      });
-      this.app.get("/test",this.test,async(req:express.Request,res:express.Response)=>{
-        try {
-         
-            return res.status(200).json({status:200,message:"done"})
-        } catch (error) {
-          return res.status(500).json({error:error.message})
-        }
-      })
+    
     
     }
      async test(req:express.Request,res:express.Response){
