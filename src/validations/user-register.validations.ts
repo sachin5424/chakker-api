@@ -18,6 +18,7 @@ const userRegisterValidate: any[] = [
     check("email").notEmpty().withMessage(message.required).isEmail()
         .withMessage("please enter a valid email address").custom(async (value, { req }) => {
             return emailcheckService(value, 'user').then((data: any) => {
+                console.log({data})
                 if(!data){
                     return false;
                 }

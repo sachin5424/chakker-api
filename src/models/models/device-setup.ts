@@ -112,7 +112,22 @@ const schema: any = new mongoose.Schema({
     Image:{
         type:String,
         default:null
-    }
+    },
+    startTime:{
+        type:String,
+    },
+    timelog:[
+        {
+            startTime:{
+                type:Date
+            },
+            endTime:{
+                type:Date,
+             
+            },
+            days: {type:Number,default:0}, hours: {type:Number,default:0}, minutes: {type:Number,default:0}, seconds: {type:Number,default:0},milliseconds:{type:Number,default:0}
+        }
+    ]
     
 
 });

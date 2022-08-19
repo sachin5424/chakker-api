@@ -11,7 +11,7 @@ const schema:any = new mongoose.Schema({
     lastName:{type:String},
     email:{
         type:String,
-        unique:true,
+      
     },
     password:{
         type:String,

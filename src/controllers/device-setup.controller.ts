@@ -77,7 +77,13 @@ export default class DeviceSetUpController {
            const _id:string = req.params.id;
            const check_power:any = req.query.power;
            const power = check_power == 'true'? true:false;
-           await PowerOfService(_id,power);
+           var startTime:any
+           var endTime:any
+           if(power == true){
+              startTime = Date.now()
+           }
+           
+           await PowerOfService(_id,power,startTime);
            return res.status(200).json({ status: 200,message:`successfully power ${power}` });
         //    await
        } catch (error) {
@@ -89,6 +95,7 @@ export default class DeviceSetUpController {
        try {
            const _id:string = req.params.id;
            const data:any[] = await DeviceFindByIdAndFilter(_id);
+           console.log({data})
            return res.status(200).json({ status:200,data})
        } catch (error) {
         return res.status(500).json({ status: 500, error: error.message})
