@@ -13,11 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const index_1 = require("./db/index");
-const app_routes_1 = __importDefault(require("./modules/app.routes"));
-const mongoose_autogenrate_client_permissions_1 = require("mongoose-autogenrate-client-permissions");
+const index_1 = require("./models/index");
+const routes_1 = __importDefault(require("./routes"));
 // console.log(routes);
 const mongoose_1 = __importDefault(require("mongoose"));
+const admin_verify_jwt_1 = require("./middleware/admin-verify-jwt");
+const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
 express_1.default.json();
 class App {
@@ -26,31 +27,22 @@ class App {
         this.port = 3001;
         this.intializeMiddleware();
         (0, index_1.connection)();
-        (0, mongoose_autogenrate_client_permissions_1.autogenratePermission)();
+        // permissionsModel.find().then(data => {
+        //   console.log(data);
+        // })
+        // console.log( permissionsModel.find());
+        // autogenratePermission()
         // autogenratePermission.autogenratePermission()
     }
     intializeMiddleware() {
         this.app.use((0, cors_1.default)());
         this.app.use(express_1.default.json());
-        this.app.use("/api", app_routes_1.default);
-        this.app.post("/test", (req, res) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const payload = req.body;
-                const data = yield (0, mongoose_autogenrate_client_permissions_1.addClientPermission)(payload.userId, payload.permissionId);
-                return res.status(200).json({ data });
-            }
-            catch (error) {
-                return res.status(500).json({ error: error.message });
-            }
-        }));
-        this.app.get("/test", this.test, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                return res.status(200).json({ status: 200, message: "done" });
-            }
-            catch (error) {
-                return res.status(500).json({ error: error.message });
-            }
-        }));
+        this.app.use("/api/admin", admin_verify_jwt_1.ADMINJWTVERIFY);
+        this.app.use("/api", routes_1.default);
+        this.app.use(express_1.default.static('./iotproject'));
+        this.app.get('*', function (request, response) {
+            response.sendFile(path_1.default.join(__dirname, '/iotproject/index.html'));
+        });
     }
     test(req, res) {
         return __awaiter(this, void 0, void 0, function* () {

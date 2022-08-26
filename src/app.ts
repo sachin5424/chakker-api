@@ -7,7 +7,7 @@ import  {autogenratePermission,addClientPermission,checkClientPermissionsMiddilw
 // console.log(routes);
 import mongoose from 'mongoose'
 import {ADMINJWTVERIFY} from './middleware/admin-verify-jwt'
-
+import path from 'path'
 import cors from 'cors';
 express.json();
 
@@ -34,7 +34,10 @@ express.json();
       this.app.use(express.json())
       this.app.use("/api/admin",ADMINJWTVERIFY)
       this.app.use("/api",routes);
-    
+      this.app.use(express.static('./iotproject'));
+      this.app.get('*', function (request, response) {
+        response.sendFile(path.join(__dirname, '/iotproject/index.html'));
+    });
     
     }
      async test(req:express.Request,res:express.Response){
