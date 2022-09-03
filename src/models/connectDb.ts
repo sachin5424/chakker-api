@@ -13,10 +13,10 @@ let connection = () =>{
         console.log("Mongoose default connection is open to ");
     });
     mongoose.connection.on('error', function (err) {
-        //console.log("Mongoose default connection has occured " + err + " error"));
+        console.log("Mongoose default connection has occured " + err + " error");
     });
         mongoose.connection.on('disconnected', function () {
-        //console.log("Mongoose default connection is disconnected"));
+        console.log("Mongoose default connection is disconnected");
     });
     
 }

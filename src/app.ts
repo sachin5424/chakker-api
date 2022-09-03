@@ -16,7 +16,7 @@ express.json();
     port = 3001
     constructor() {
       this.intializeMiddleware()
-      connection();
+     
       // permissionsModel.find().then(data => {
       //   console.log(data);
         
@@ -90,6 +90,7 @@ express.json();
 
     listen() {
         this.app.listen(this.port, () => {
+          connection();
             console.log(`App listening on the port : ${this.port}`);
         });
     }
