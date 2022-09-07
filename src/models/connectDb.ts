@@ -6,9 +6,8 @@ var mongoDB = 'mongodb://127.0.0.1:27017/my_database';
 
 let connection = () =>{
      var mongoUrl:string = "mongodb+srv://sachin:URnb17mqFrVFqnT2@cluster0.fsuun.mongodb.net/IOTPROJET?retryWrites=true&w=majority";
-     var localMOngo = "mongodb://root:admim@13.233.18.144:27017/test"
-     var t = "mongodb://13.233.18.144/:27017/hhh"
-     mongoose.connect(mongoUrl);
+     var localMOngo = "mongodb://mongoadmin:iZNZFRlvGAjMtL7Rp7d98g7q7@3.108.137.37:22017/IOTPROJET?authSource=admin&retryWrites=true&w=majority";
+     mongoose.connect(localMOngo,{});
      mongoose.connection.on('connected', function () {
         console.log("Mongoose default connection is open to ");
     });

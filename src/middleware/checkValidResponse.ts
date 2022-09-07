@@ -3,7 +3,7 @@ import { validationResult } from 'express-validator'
 
 let checkValidResponse = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
-        console.log(req.method);
+        console.log(req.body);
         
         const errors = validationResult(req);
         if(!errors.isEmpty()){

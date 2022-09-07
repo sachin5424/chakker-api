@@ -105,6 +105,16 @@ const DeviceFindByIdAndFilter = (_id:any,) =>{
                   },
             },
             {$unwind:"$subZoneId"},
+            {
+                $lookup: {
+                    from: 'DeviceLastLogs',
+                    localField: 'deviceId',
+                    foreignField: 'DeviceIMEI',
+                    as: 'DeviceLastLogs'
+                  },
+            },
+                      
+          { $unwind: {path: "$DeviceLastLogs", preserveNullAndEmptyArrays: true} },
 
 
             ]);

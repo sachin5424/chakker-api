@@ -64,6 +64,7 @@ export default class DeviceSetUpController {
        try {
            const _id:string = req.params.id;
            const payload:DeviceSetupUpdateInterface = req.body;
+           console.log({reql:req.body})
            const data:any = await upDateDrivceSetup(_id,payload);
            return res.status(200).json({ status: 200,message:"",data})
 
