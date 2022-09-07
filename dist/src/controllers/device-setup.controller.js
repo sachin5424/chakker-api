@@ -75,6 +75,7 @@ class DeviceSetUpController {
             try {
                 const _id = req.params.id;
                 const payload = req.body;
+                console.log({ reql: req.body });
                 const data = yield (0, device_setup_service_1.upDateDrivceSetup)(_id, payload);
                 return res.status(200).json({ status: 200, message: "", data });
             }

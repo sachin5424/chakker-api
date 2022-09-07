@@ -26,7 +26,6 @@ class App {
         this.app = (0, express_1.default)();
         this.port = 3001;
         this.intializeMiddleware();
-        (0, index_1.connection)();
         // permissionsModel.find().then(data => {
         //   console.log(data);
         // })
@@ -93,6 +92,7 @@ class App {
     }
     listen() {
         this.app.listen(this.port, () => {
+            (0, index_1.connection)();
             console.log(`App listening on the port : ${this.port}`);
         });
     }

@@ -4,7 +4,7 @@ exports.checkValidResponse = void 0;
 const express_validator_1 = require("express-validator");
 let checkValidResponse = (req, res, next) => {
     try {
-        console.log(req.method);
+        console.log(req.body);
         const errors = (0, express_validator_1.validationResult)(req);
         if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });
