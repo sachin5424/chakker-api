@@ -1,12 +1,12 @@
 import express from 'express';
 import Routes from './routes/auth.routes';
-import {connection} from './models/index';
-import {ZoneSetUpRoutes} from './routes/zone-setup.routes';
+import { connection } from './models/index';
+import { ZoneSetUpRoutes } from './routes/zone-setup.routes';
 import routes from './routes';
-import  {autogenratePermission,addClientPermission,checkClientPermissionsMiddilware,permissionsModel} from 'mongoose-autogenrate-client-permissions'
+import { autogenratePermission, addClientPermission, checkClientPermissionsMiddilware, permissionsModel } from 'mongoose-autogenrate-client-permissions'
 // console.log(routes);
 import mongoose from 'mongoose'
-import {ADMINJWTVERIFY} from './middleware/admin-verify-jwt'
+import { ADMINJWTVERIFY } from './middleware/admin-verify-jwt'
 import path from 'path'
 import cors from 'cors';
 import multer from 'multer'
@@ -14,12 +14,12 @@ express.json();
 
 const imageStorage = multer.diskStorage({
   // Destination to store image     
-  destination: 'upload', 
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + '_' + Date.now() 
-           + path.extname(file.originalname))
-          // file.fieldname is name of the field (image)
-          // path.extname get the uploaded file extension
+  destination: 'upload',
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '_' + Date.now()
+      + path.extname(file.originalname))
+    // file.fieldname is name of the field (image)
+    // path.extname get the uploaded file extension
   }
 });
 const imageUpload = multer({
@@ -28,62 +28,84 @@ const imageUpload = multer({
     fileSize: 1000000 // 1000000 Bytes = 1 MB
   },
   fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(png|jpg)$/)) { 
-       // upload only png and jpg format
-       return cb(new Error('Please upload a Image'))
-     }
-   cb(undefined, true)
-}
-}) 
-
- class App {
-    app:any = express()
-    port = 3001
-    constructor() {
-      this.intializeMiddleware()
-     
-      // permissionsModel.find().then(data => {
-      //   console.log(data);
-        
-      // })
-      // console.log( permissionsModel.find());
-      
-      // autogenratePermission()
-      // autogenratePermission.autogenratePermission()
-
-   
+    if (!file.originalname.match(/\.(png|jpg)$/)) {
+      // upload only png and jpg format
+      return cb(new Error('Please upload a Image'))
     }
-  
-    intializeMiddleware() { 
-      this.app.use(cors())
-      this.app.use(express.json())
-      this.app.use("/api/admin",ADMINJWTVERIFY)
-      this.app.use("/api",routes);
-      this.app.use(express.static('./iotproject'));
-      this.app.use(express.static(path.join(__dirname,'../upload/')));
-      this.app.get('*', function (request, response) {
-        response.sendFile(path.join(__dirname, '/iotproject/index.html'));
+    cb(undefined, true)
+  }
+})
+
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './upload');
+  },
+  filename: function (req, file, callback) {
+    callback(null, file.fieldname + '-' + Date.now());
+  }
+});
+
+var upload = multer({ storage : storage }).array('image',2);
+​
+class App {
+  app: any = express()
+  port = 3001
+  constructor() {
+    this.intializeMiddleware()
+
+    // permissionsModel.find().then(data => {
+    //   console.log(data);
+
+    // })
+    // console.log( permissionsModel.find());
+
+    // autogenratePermission()
+    // autogenratePermission.autogenratePermission()
+
+
+  }
+
+  intializeMiddleware() {
+    this.app.use(cors())
+    this.app.use(express.json())
+    this.app.use("/api/admin", ADMINJWTVERIFY)
+    this.app.use("/api", routes);
+    this.app.use(express.static('./iotproject'));
+    this.app.use(express.static(path.join(__dirname, '../upload/')));
+    this.app.get('*', function (request, response) {
+      response.sendFile(path.join(__dirname, '/iotproject/index.html'));
     });
 
-    this.app.post('/uploadImage',imageUpload.single('image'),(req:any, res:any) => {
+    this.app.post('/uploadImage', imageUpload.single('image'), (req: any, res: any) => {
       try {
-        return res.json({success:200, url:`http://13.234.48.21:3001/${req.file.filename}`})//http://13.234.48.21:3001/
+        return res.json({ success: 200, url: `http://13.234.48.21:3001/${req.file.filename}` })//http://13.234.48.21:3001/
       } catch (error) {
         return res.status(400).send({ error: error.message })
       }
-  })
-    
-    }
-     async test(req:express.Request,res:express.Response){
+    })
+    this.app.post('/array/uploadImage',imageUpload.array('image',3), (req: any, res: any) => {
       try {
-        const data:any = await this.checkPermission("users","users","_id","62247a9aa2bdf04a5b842cbd","GET");
-        return res.status(200).json({data})
+         let image = [];
+         req.files.map((url:any)=>{
+          image = [...image,"http://13.234.48.21:3001/"+url.filename]
+         })
+        return res.json({ success: 200, images:image })
       } catch (error) {
-        res.status(500).json({error})
+        return res.status(400).send({ error: error.message })
       }
+    })
+
+  }
+  async test(req: express.Request, res: express.Response) {
+    try {
+      const data: any = await this.checkPermission("users", "users", "_id", "62247a9aa2bdf04a5b842cbd", "GET");
+      return res.status(200).json({ data })
+    } catch (error) {
+      res.status(500).json({ error })
     }
-   async checkPermission(clientModelName:any,checkModelName:any,clentForeignField:any,clientId:any,method:any){
-    return new Promise((resolve,reject)=>{
+  }
+  async checkPermission(clientModelName: any, checkModelName: any, clentForeignField: any, clientId: any, method: any) {
+    return new Promise((resolve, reject) => {
 
       mongoose.connection.db.collection('user_auth_permissions').aggregate([
         {
@@ -95,7 +117,7 @@ const imageUpload = multer({
             as: 'permissions',
           },
         },
-    
+
         {
           $lookup: {
             from: clientModelName,
@@ -107,27 +129,27 @@ const imageUpload = multer({
         ,
         { $match: { userId: new mongoose.Types.ObjectId(clientId), permissions: { $elemMatch: { model_name: checkModelName, method: method } } } },
       ]).toArray().then(data => {
-        mongoose.connection.db.collection(clientModelName).findOne({_id:new mongoose.Types.ObjectId(clientId)}).then(result=>{
-           if(data.length == 0){
-              reject(false)
+        mongoose.connection.db.collection(clientModelName).findOne({ _id: new mongoose.Types.ObjectId(clientId) }).then(result => {
+          if (data.length == 0) {
+            reject(false)
             // return res.status(403).json({ message: "not permission this route" })
           }
-          else{
+          else {
             resolve(true)
             // next()
           }
         })
       });
     })
-   }
-  
+  }
 
-    listen() {
-        this.app.listen(this.port, () => {
-          connection();
-            console.log(`App listening on the port : ${this.port}`);
-        });
-    }
+
+  listen() {
+    this.app.listen(this.port, () => {
+      connection();
+      console.log(`App listening on the port : ${this.port}`);
+    });
+  }
 }
 
 export default App
