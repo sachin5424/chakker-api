@@ -9,7 +9,32 @@ import mongoose from 'mongoose'
 import {ADMINJWTVERIFY} from './middleware/admin-verify-jwt'
 import path from 'path'
 import cors from 'cors';
+import multer from 'multer'
 express.json();
+
+const imageStorage = multer.diskStorage({
+  // Destination to store image     
+  destination: 'upload', 
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '_' + Date.now() 
+           + path.extname(file.originalname))
+          // file.fieldname is name of the field (image)
+          // path.extname get the uploaded file extension
+  }
+});
+const imageUpload = multer({
+  storage: imageStorage,
+  limits: {
+    fileSize: 1000000 // 1000000 Bytes = 1 MB
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(png|jpg)$/)) { 
+       // upload only png and jpg format
+       return cb(new Error('Please upload a Image'))
+     }
+   cb(undefined, true)
+}
+}) 
 
  class App {
     app:any = express()
@@ -35,9 +60,18 @@ express.json();
       this.app.use("/api/admin",ADMINJWTVERIFY)
       this.app.use("/api",routes);
       this.app.use(express.static('./iotproject'));
+      this.app.use(express.static(path.join(__dirname,'../upload/')));
       this.app.get('*', function (request, response) {
         response.sendFile(path.join(__dirname, '/iotproject/index.html'));
     });
+
+    this.app.post('/uploadImage',imageUpload.single('image'),(req:any, res:any) => {
+      try {
+        return res.json({success:200, url:`http://13.234.48.21:3001/${req.file.filename}`})//http://13.234.48.21:3001/
+      } catch (error) {
+        return res.status(400).send({ error: error.message })
+      }
+  })
     
     }
      async test(req:express.Request,res:express.Response){
@@ -86,7 +120,7 @@ express.json();
       });
     })
    }
-    
+  
 
     listen() {
         this.app.listen(this.port, () => {

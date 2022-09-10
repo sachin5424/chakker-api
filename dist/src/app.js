@@ -20,7 +20,31 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const admin_verify_jwt_1 = require("./middleware/admin-verify-jwt");
 const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
+const multer_1 = __importDefault(require("multer"));
 express_1.default.json();
+const imageStorage = multer_1.default.diskStorage({
+    // Destination to store image     
+    destination: 'upload',
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '_' + Date.now()
+            + path_1.default.extname(file.originalname));
+        // file.fieldname is name of the field (image)
+        // path.extname get the uploaded file extension
+    }
+});
+const imageUpload = (0, multer_1.default)({
+    storage: imageStorage,
+    limits: {
+        fileSize: 1000000 // 1000000 Bytes = 1 MB
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(png|jpg)$/)) {
+            // upload only png and jpg format
+            return cb(new Error('Please upload a Image'));
+        }
+        cb(undefined, true);
+    }
+});
 class App {
     constructor() {
         this.app = (0, express_1.default)();
@@ -39,8 +63,17 @@ class App {
         this.app.use("/api/admin", admin_verify_jwt_1.ADMINJWTVERIFY);
         this.app.use("/api", routes_1.default);
         this.app.use(express_1.default.static('./iotproject'));
+        this.app.use(express_1.default.static(path_1.default.join(__dirname, '../upload/')));
         this.app.get('*', function (request, response) {
             response.sendFile(path_1.default.join(__dirname, '/iotproject/index.html'));
+        });
+        this.app.post('/uploadImage', imageUpload.single('image'), (req, res) => {
+            try {
+                return res.json({ success: 200, url: `http://13.234.48.21:3001/${req.file.filename}` }); //http://13.234.48.21:3001/
+            }
+            catch (error) {
+                return res.status(400).send({ error: error.message });
+            }
         });
     }
     test(req, res) {
