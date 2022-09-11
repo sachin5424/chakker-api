@@ -45,6 +45,15 @@ const imageUpload = (0, multer_1.default)({
         cb(undefined, true);
     }
 });
+var storage = multer_1.default.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './upload');
+    },
+    filename: function (req, file, callback) {
+        callback(null, file.fieldname + '-' + Date.now());
+    }
+});
+var upload = (0, multer_1.default)({ storage: storage }).array('image', 2);
 class App {
     constructor() {
         this.app = (0, express_1.default)();
@@ -70,6 +79,18 @@ class App {
         this.app.post('/uploadImage', imageUpload.single('image'), (req, res) => {
             try {
                 return res.json({ success: 200, url: `http://13.234.48.21:3001/${req.file.filename}` }); //http://13.234.48.21:3001/
+            }
+            catch (error) {
+                return res.status(400).send({ error: error.message });
+            }
+        });
+        this.app.post('/array/uploadImage', imageUpload.array('image', 3), (req, res) => {
+            try {
+                let image = [];
+                req.files.map((url) => {
+                    image = [...image, "http://13.234.48.21:3001/" + url.filename];
+                });
+                return res.json({ success: 200, images: image });
             }
             catch (error) {
                 return res.status(400).send({ error: error.message });
