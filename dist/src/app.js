@@ -72,7 +72,7 @@ class App {
         this.app.use("/api/admin", admin_verify_jwt_1.ADMINJWTVERIFY);
         this.app.use("/api", routes_1.default);
         this.app.use(express_1.default.static('./iotproject'));
-        this.app.use(express_1.default.static(path_1.default.join(__dirname, '../upload/')));
+        this.app.use('/static', express_1.default.static(path_1.default.join(__dirname, '../upload/')));
         this.app.get('*', function (request, response) {
             response.sendFile(path_1.default.join(__dirname, '/iotproject/index.html'));
         });
