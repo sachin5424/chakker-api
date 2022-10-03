@@ -127,7 +127,11 @@ const schema = new mongoose_1.default.Schema({
             },
             days: { type: Number, default: 0 }, hours: { type: Number, default: 0 }, minutes: { type: Number, default: 0 }, seconds: { type: Number, default: 0 }, milliseconds: { type: Number, default: 0 }
         }
-    ]
+    ],
+    mode: {
+        type: Number,
+        default: 1
+    }
 });
 const deviceSetupModel = mongoose_1.default.model('device_setup', schema);
 exports.default = deviceSetupModel;

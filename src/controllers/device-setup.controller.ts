@@ -1,6 +1,6 @@
 import express from 'express';
 import { DeviceSetupAddInterface,DeviceSetupUpdateInterface } from '../interface/device-setup.interface';
-import { createDeviceSetup,DeviceSetupListService ,upDateDrivceSetup,DeviceSetupListAggregate} from '../services/device-setup.service';
+import { createDeviceSetup,DeviceSetupListService ,upDateDrivceSetup,DeviceSetupListAggregate, drivceSetupUpdate, DrviceMaintenance} from '../services/device-setup.service';
 import {generateRandomString} from '../shared/_hepler';
 import {PowerOfService,DeviceFindById,DeviceFindByIdAndFilter} from '../services/device-setup-dashboard.service'
 import {base64StringToImage} from 'base64string-to-image';
@@ -73,6 +73,19 @@ export default class DeviceSetUpController {
        }
    } 
 
+   async new_UpdateDeviceZoneSetup(req:express.Request, res: express.Response){
+    try {
+        const _id:string = req.params.id;
+        const payload:DeviceSetupUpdateInterface = req.body;
+        console.log({reql:req.body})
+        const data:any = await drivceSetupUpdate(_id,payload);
+        return res.status(200).json({ status: 200,message:"",data})
+
+    } catch (error) {
+        return res.status(500).json({ status: 500, error: error.message})
+    }
+}
+
    async DeviceZonePowerOff(req:express.Request, res: express.Response){
        try {
            const _id:string = req.params.id;
@@ -102,6 +115,19 @@ export default class DeviceSetUpController {
         return res.status(500).json({ status: 500, error: error.message})
        }
    }
+    
+
+   async drviceMaintenance(req:express.Request, res: express.Response){
+    try {
+        const payload:any = req.body;
+        const data:any= await DrviceMaintenance(payload);
+        console.log({data})
+        return res.status(200).json({ status:200,data})
+    } catch (error) {
+     return res.status(500).json({ status: 500, error: error.message})
+    }
+}
 
 }
+
 

@@ -116,6 +116,16 @@ const DeviceFindByIdAndFilter = (_id:any,) =>{
                       
           { $unwind: {path: "$DeviceLastLogs", preserveNullAndEmptyArrays: true} },
 
+   {
+                $lookup: {
+                    from: 'drvice_maintenances',
+                    localField: 'deviceId',
+                    foreignField: 'deviceId',
+                    as: 'drvice_maintenances'
+                  },
+            },
+                      
+          { $unwind: {path: "$drvice_maintenances", preserveNullAndEmptyArrays: true} },
 
             ]);
             resolve(data)

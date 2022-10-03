@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userProfileModel = exports.deviceSetupModel = exports.subZoneModel = exports.zoneSetupModel = exports.userModel = exports.connection = void 0;
+exports.Drvice_Maintenance = exports.userProfileModel = exports.deviceSetupModel = exports.subZoneModel = exports.zoneSetupModel = exports.userModel = exports.connection = void 0;
 const connectDb_1 = require("./connectDb");
 Object.defineProperty(exports, "connection", { enumerable: true, get: function () { return connectDb_1.connection; } });
 const user_1 = __importDefault(require("./models/user"));
@@ -16,4 +16,6 @@ const device_setup_1 = __importDefault(require("./models/device-setup"));
 exports.deviceSetupModel = device_setup_1.default;
 const user_profile_1 = require("./models/user-profile");
 Object.defineProperty(exports, "userProfileModel", { enumerable: true, get: function () { return user_profile_1.userProfileModel; } });
+const maintenance_1 = __importDefault(require("./models/maintenance"));
+exports.Drvice_Maintenance = maintenance_1.default;
 //# sourceMappingURL=index.js.map

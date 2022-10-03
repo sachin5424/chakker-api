@@ -1,5 +1,5 @@
 import {DeviceSetupAddInterface,DeviceSetupUpdateInterface} from '../interface/device-setup.interface';
-import {deviceSetupModel} from '../models/index';
+import {deviceSetupModel, Drvice_Maintenance} from '../models/index';
 
 let createDeviceSetup = (value:DeviceSetupAddInterface) => {
     return new Promise<DeviceSetupAddInterface>(async (resolve, reject) => {
@@ -79,12 +79,35 @@ let DeviceSetupListAggregate= () =>{
 let upDateDrivceSetup = (id:String,value:DeviceSetupUpdateInterface) =>{
    return new Promise<DeviceSetupUpdateInterface>(async (resolve, reject)=>{
        try {
-           const data:any = await deviceSetupModel.findOneAndUpdate({_id:id},value);
+        console.log(value)
+           const data:any = await deviceSetupModel.updateOne({_id:id},value);
            resolve(data)
        } catch (error) {
            reject(error)
        }
    })
 }
+
+let drivceSetupUpdate =async (id:String,value:any) =>{
+   try {
+      return  await deviceSetupModel.updateOne({_id:id},value);
+   } catch (error) {
+      throw error
+   }
+ }
+
+ let DrviceMaintenance = async (payload:any)=>{
+    try {
+        let check = await Drvice_Maintenance.findOne({deviceId:payload.deviceId})
+        if(check){
+           return await Drvice_Maintenance.updateOne({deviceId:payload.deviceId},payload);
+        }
+        return await Drvice_Maintenance.create(payload);
+    
+
+    } catch (error) {
+        throw error
+    }
+ }
  
-export {createDeviceSetup,DeviceSetupListService,upDateDrivceSetup,DeviceSetupListAggregate}
+export {createDeviceSetup,DeviceSetupListService,upDateDrivceSetup,DeviceSetupListAggregate,DrviceMaintenance,drivceSetupUpdate}

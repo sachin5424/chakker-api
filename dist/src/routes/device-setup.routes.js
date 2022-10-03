@@ -13,6 +13,8 @@ const router = (0, express_1.Router)();
 const Routers = [
     router.post("/admin/add/device-setup", device_setup_dashboard_validations_1.deviceSetpValidation, checkValidResponse_1.checkValidResponse, deviceSetUpController.addDeviceZoneSetup),
     router.get("/admin/list/device-setup", deviceSetUpController.ListDeviceZoneSetup),
+    router.put("/admin/update/deviceSetup/:id", deviceSetUpController.new_UpdateDeviceZoneSetup),
+    router.post("/admin/drviceMaintenance", deviceSetUpController.drviceMaintenance),
     router.put("/admin/update/device-setup/:id", device_setup_dashboard_validations_1.upDateDeviceSetpValidation, checkValidResponse_1.checkValidResponse, deviceSetUpController.UpdateDeviceZoneSetup),
     router.get("/admin/power/device-setup/:id", device_setup_dashboard_validations_1.powerDeviceSetpValidation, checkValidResponse_1.checkValidResponse, deviceSetUpController.DeviceZonePowerOff),
     router.get("/admin/device-setup/details/:id", deviceSetUpController.DeviceZoneDetails)

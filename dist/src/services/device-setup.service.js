@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeviceSetupListAggregate = exports.upDateDrivceSetup = exports.DeviceSetupListService = exports.createDeviceSetup = void 0;
+exports.drivceSetupUpdate = exports.DrviceMaintenance = exports.DeviceSetupListAggregate = exports.upDateDrivceSetup = exports.DeviceSetupListService = exports.createDeviceSetup = void 0;
 const index_1 = require("../models/index");
 let createDeviceSetup = (value) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
@@ -84,7 +84,8 @@ exports.DeviceSetupListAggregate = DeviceSetupListAggregate;
 let upDateDrivceSetup = (id, value) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const data = yield index_1.deviceSetupModel.findOneAndUpdate({ _id: id }, value);
+            console.log(value);
+            const data = yield index_1.deviceSetupModel.updateOne({ _id: id }, value);
             resolve(data);
         }
         catch (error) {
@@ -93,4 +94,26 @@ let upDateDrivceSetup = (id, value) => {
     }));
 };
 exports.upDateDrivceSetup = upDateDrivceSetup;
+let drivceSetupUpdate = (id, value) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return yield index_1.deviceSetupModel.updateOne({ _id: id }, value);
+    }
+    catch (error) {
+        throw error;
+    }
+});
+exports.drivceSetupUpdate = drivceSetupUpdate;
+let DrviceMaintenance = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let check = yield index_1.Drvice_Maintenance.findOne({ deviceId: payload.deviceId });
+        if (check) {
+            return yield index_1.Drvice_Maintenance.updateOne({ deviceId: payload.deviceId }, payload);
+        }
+        return yield index_1.Drvice_Maintenance.create(payload);
+    }
+    catch (error) {
+        throw error;
+    }
+});
+exports.DrviceMaintenance = DrviceMaintenance;
 //# sourceMappingURL=device-setup.service.js.map

@@ -84,6 +84,20 @@ class DeviceSetUpController {
             }
         });
     }
+    new_UpdateDeviceZoneSetup(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const _id = req.params.id;
+                const payload = req.body;
+                console.log({ reql: req.body });
+                const data = yield (0, device_setup_service_1.drivceSetupUpdate)(_id, payload);
+                return res.status(200).json({ status: 200, message: "", data });
+            }
+            catch (error) {
+                return res.status(500).json({ status: 500, error: error.message });
+            }
+        });
+    }
     DeviceZonePowerOff(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -109,6 +123,19 @@ class DeviceSetUpController {
             try {
                 const _id = req.params.id;
                 const data = yield (0, device_setup_dashboard_service_1.DeviceFindByIdAndFilter)(_id);
+                console.log({ data });
+                return res.status(200).json({ status: 200, data });
+            }
+            catch (error) {
+                return res.status(500).json({ status: 500, error: error.message });
+            }
+        });
+    }
+    drviceMaintenance(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const payload = req.body;
+                const data = yield (0, device_setup_service_1.DrviceMaintenance)(payload);
                 console.log({ data });
                 return res.status(200).json({ status: 200, data });
             }

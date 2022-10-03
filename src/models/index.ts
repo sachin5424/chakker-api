@@ -6,6 +6,7 @@ import zoneSetupModel from './models/zone-setup';
 import subZoneModel from './models/sub-zone';
 import deviceSetupModel from './models/device-setup'
 import {userProfileModel} from './models/user-profile'
+import Drvice_Maintenance from './models/maintenance';
 
 export {
     connection,
@@ -13,6 +14,7 @@ export {
     zoneSetupModel,
     subZoneModel,
     deviceSetupModel,
-    userProfileModel
+    userProfileModel,
+    Drvice_Maintenance
     
 }
